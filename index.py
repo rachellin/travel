@@ -6,21 +6,26 @@ import time
 
 DRIVER_PATH = 'C:\chromedriver.exe'
 # driver = webdriver.Chrome(executable_path=DRIVER_PATH)
-driver = webdriver.Chrome()
 
-# Set up the Chrome driver
-# driver = webdriver.Chrome(executable_path='/path/to/chromedriver')
-# driver.get("https://pinterest.com")
+options = webdriver.ChromeOptions()
+options.add_argument('--enable-logging')
+options.add_argument('--v=1')
+driver = webdriver.Chrome(options=options)
+
+# driver = webdriver.Chrome()
+
 
 # Open the Google Custom Map URL
-map_url = "10NXxdOY_DArwWYU3othpTHPzsok2Pjs"
-driver.get('https://www.google.com/maps/d/viewer?mid={}'.format(map_url))
+map_id = "10NXxdOY_DArwWYU3othpTHPzsok2Pjs" # the id is the part before the ampersand 
+driver.get('https://www.google.com/maps/d/viewer?mid={}'.format(map_id))
 
 # Allow some time for the page to load
 time.sleep(5)
 
 # Find all markers on the map
-markers = driver.find_elements(By.CSS_SELECTOR, 'div[role="button"]')
+# markers = driver.find_elements(By.CSS_SELECTOR, 'div[role="button"]')
+
+markers = driver.find_elements(By.CSS_SELECTOR, 'div[class="HzV7m-pbTTYe-ibnC6b pbTTYe-ibnC6b-d6wfac"]')
 
 data = []
 
@@ -54,10 +59,16 @@ for marker in markers:
             'longitude': longitude,
             'category': category
         })
+
+        print("got data for {}".format(title))
     except Exception as e:
         print(f'Error: {e}')
         continue
 
+
+print(len(data))
+print(data[0])
+exit()
 # Print the extracted data
 for entry in data:
     print(entry)
